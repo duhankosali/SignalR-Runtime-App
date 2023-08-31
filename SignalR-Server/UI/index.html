@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/@microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+    <script>
+        $(document).ready(() => {
+            // connection
+            const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:5001/myhub") // endpoint name:myhub, port:5001
+            .withAutomaticReconnect([1000,1000,2000,5000,10000,30000]) // 1) Connected first and then disconnected (Attempts to reconnect) 
+            .build(); // to build
+            
+            async function startMethod() // Start Connection Method
+            {
+                try{
+                    await connection.start();
+                }
+                catch(error){
+                    setTimeout(() => startMethod(), 2000); // Repeat method every 2 seconds
+                }
+            }
+
+            startMethod();
+
+            const statusDivTag = $("#statusDiv");
+            // onreconnecting, onreconnect, onclose methods:
+            connection.onreconnecting(error => { // Connection lost, Making a connection request again.
+                statusDivTag.css("background-color", "blue");
+                statusDivTag.css("color", "white");
+                statusDivTag.html("Connecting...");
+                statusDivTag.fadeIn(2000, () =>{
+                    setTimeout(() => {
+                        statusDivTag.fadeOut(2000);
+                    }, 2000)
+                })
+            });
+
+            connection.onreconnected(connectionId => { // After the reconnect request, the connection was established.
+                statusDivTag.css("background-color", "green");
+                statusDivTag.css("color", "white");
+                statusDivTag.html("Connected.");
+                statusDivTag.fadeIn(2000, () =>{
+                    setTimeout(() => {
+                        statusDivTag.fadeOut(2000);
+                    }, 2000)
+                })
+            });
+
+            connection.onclose(connectionId => { // Failed to connect after reconnect request.
+                statusDivTag.css("background-color", "red");
+                statusDivTag.css("color", "white");
+                statusDivTag.html("Connection Failed.");
+                statusDivTag.fadeIn(2000, () =>{
+                    setTimeout(() => {
+                        statusDivTag.fadeOut(2000);
+                    }, 2000)
+                })
+            });
+
+            $("#btnSend").click(() => {
+                let message = $("#txtMessage").val();
+                connection.invoke("SendMessageAsync", message)
+                    .catch(error => console.log("Bir hata oluştu: " + error)); // Posting to MyHub/SendMessageAsync endpoint.
+            });
+
+            connection.on("receiveMessage", message => {
+                console.log("test");
+                $("#messageDiv").append("<p>" + message + "</p>"); // <p> elementi içine mesajı ekliyoruz.
+            });
+
+            // 2) When the connection is not established at all
+            
+        });
+    </script>
+</head>
+<body>
+    <div id="statusDiv" style="display:none"></div>
+
+    <input type="text" id="txtMessage">
+    <button id="btnSend">Send</button>
+
+    <div id="messageDiv"></div>
+</body>
+</html>
