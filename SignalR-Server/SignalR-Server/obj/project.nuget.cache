@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tzc4ipLkI5VEzpko/l0w/Sny+lRQjOeuoHppAXxDxYT+0+OdTNsfKRi1Ws8vP8zK9lrpKBo8/cUV0IBRp2jbXw==",
+  "dgSpecHash": "RzH8OGAA3wy8qD6J3LfrNyEKL4lC/Zuv74MD5GSa+XWZENn8vo4ZIDayK7JvE75U9hL4UCYMyNchHUjceFrv+Q==",
   "success": true,
-  "projectFilePath": "D:\\Github\\SignalR-Server\\SignalR-Server\\SignalR-Server.csproj",
+  "projectFilePath": "D:\\Github\\SignalR-Runtime-App\\SignalR-Server\\SignalR-Server\\SignalR-Server.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

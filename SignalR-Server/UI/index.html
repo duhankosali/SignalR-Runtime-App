@@ -25,38 +25,35 @@
             startMethod();
 
             const statusDivTag = $("#statusDiv");
-            // onreconnecting, onreconnect, onclose methods:
-            connection.onreconnecting(error => { // Connection lost, Making a connection request again.
-                statusDivTag.css("background-color", "blue");
-                statusDivTag.css("color", "white");
-                statusDivTag.html("Connecting...");
+            function animation()
+            {
                 statusDivTag.fadeIn(2000, () =>{
                     setTimeout(() => {
                         statusDivTag.fadeOut(2000);
                     }, 2000)
                 })
+            }
+
+            // onreconnecting, onreconnect, onclose methods:
+            connection.onreconnecting(error => { // Connection lost, Making a connection request again.
+                statusDivTag.css("background-color", "blue");
+                statusDivTag.css("color", "white");
+                statusDivTag.html("Connecting...");
+                animation();
             });
 
             connection.onreconnected(connectionId => { // After the reconnect request, the connection was established.
                 statusDivTag.css("background-color", "green");
                 statusDivTag.css("color", "white");
                 statusDivTag.html("Connected.");
-                statusDivTag.fadeIn(2000, () =>{
-                    setTimeout(() => {
-                        statusDivTag.fadeOut(2000);
-                    }, 2000)
-                })
+                animation();
             });
 
             connection.onclose(connectionId => { // Failed to connect after reconnect request.
                 statusDivTag.css("background-color", "red");
                 statusDivTag.css("color", "white");
                 statusDivTag.html("Connection Failed.");
-                statusDivTag.fadeIn(2000, () =>{
-                    setTimeout(() => {
-                        statusDivTag.fadeOut(2000);
-                    }, 2000)
-                })
+                animation();
             });
 
             $("#btnSend").click(() => {
@@ -66,10 +63,28 @@
             });
 
             connection.on("receiveMessage", message => {
-                console.log("test");
                 $("#messageDiv").append("<p>" + message + "</p>"); // <p> elementi içine mesajı ekliyoruz.
             });
 
+            connection.on("userJoined", connectionId => {
+                statusDivTag.html(connectionId + " joined.");
+                statusDivTag.css("background-color", "green");
+                animation();
+            });
+
+            connection.on("userLeft", connectionId => {
+                statusDivTag.html(connectionId + " left.");  
+                statusDivTag.css("background-color", "red");
+                animation();
+            });
+
+            connection.on("clients", clientsData => {
+                let text = "";
+                $.each(clientsData, (index,item) => {
+                    text += "<li>" + item + "</li>";
+                });
+                $("#clientsDiv").html(text)
+            });
             // 2) When the connection is not established at all
             
         });
@@ -82,5 +97,6 @@
     <button id="btnSend">Send</button>
 
     <div id="messageDiv"></div>
+    <div id="clientsDiv"></div>
 </body>
 </html>

@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Github\\SignalR-Server\\SignalR-Server\\SignalR-Server.csproj",
+      "projectUniqueName": "D:\\Github\\SignalR-Runtime-App\\SignalR-Server\\SignalR-Server\\SignalR-Server.csproj",
       "projectName": "SignalR-Server",
-      "projectPath": "D:\\Github\\SignalR-Server\\SignalR-Server\\SignalR-Server.csproj",
+      "projectPath": "D:\\Github\\SignalR-Runtime-App\\SignalR-Server\\SignalR-Server\\SignalR-Server.csproj",
       "packagesPath": "C:\\Users\\duhan\\.nuget\\packages\\",
-      "outputPath": "D:\\Github\\SignalR-Server\\SignalR-Server\\obj\\",
+      "outputPath": "D:\\Github\\SignalR-Runtime-App\\SignalR-Server\\SignalR-Server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\duhan\\AppData\\Roaming\\NuGet\\NuGet.Config",
