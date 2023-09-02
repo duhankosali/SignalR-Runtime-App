@@ -12,10 +12,13 @@
             .withAutomaticReconnect([1000,1000,2000,5000,10000,30000]) // 1) Connected first and then disconnected (Attempts to reconnect) 
             .build(); // to build
 
+            let _connectionId = "";
             async function startMethod() // Start Connection Method
             {
                 try{
                     await connection.start();
+                    _connectionId = connection.connectionId;
+                    $("#connectionIdDiv").html("Your Connection Id: " + _connectionId)
                 }
                 catch(error){
                     setTimeout(() => startMethod(), 2000); // Repeat method every 2 seconds
@@ -58,10 +61,9 @@
 
             $("#btnSend").click(() => {
                 let message = $("#txtMessage").val();
-                const connectionId = connection.connectionId;
                 // connection.invoke("SendMessageAsync", message)
                 //     .catch(error => console.log("Bir hata oluştu: " + error)); // Posting to MyHub/SendMessageAsync endpoint.
-                $.get(`https://localhost:5001/api/home/${message}/${connectionId}`, (response) => {
+                $.get(`https://localhost:5001/api/home/${message}/${_connectionId}`, (response) => {
                     console.log('Başarılı:', response);
                 }).fail((error) => {
                     console.log('Hata:', error);
@@ -93,10 +95,23 @@
             });
             // 2) When the connection is not established at all
             
+
+            // join group
+            $("#joinGroupBtn").click(() => {
+                let groupName = $("input[name=group]:checked").val();
+                connection.invoke("AddGroup", _connectionId, groupName).catch(error => console.log("error: " + error));
+            });
+
         });
     </script>
 </head>
 <body>
+    <div id="connectionIdDiv" style="background-color: black; color:aliceblue"></div>
+    <input type="radio" name="group" value="A"> A
+    <input type="radio" name="group" value="A"> B
+    <input type="radio" name="group" value="A"> C
+    <button id="joinGroupBtn">Join</button>
+    <br>
     <div id="statusDiv" style="display:none"></div>
 
     <input type="text" id="txtMessage">
