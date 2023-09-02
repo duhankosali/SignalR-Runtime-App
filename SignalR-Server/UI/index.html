@@ -11,7 +11,7 @@
             .withUrl("https://localhost:5001/myhub") // endpoint name:myhub, port:5001
             .withAutomaticReconnect([1000,1000,2000,5000,10000,30000]) // 1) Connected first and then disconnected (Attempts to reconnect) 
             .build(); // to build
-            
+
             async function startMethod() // Start Connection Method
             {
                 try{
@@ -58,12 +58,18 @@
 
             $("#btnSend").click(() => {
                 let message = $("#txtMessage").val();
-                connection.invoke("SendMessageAsync", message)
-                    .catch(error => console.log("Bir hata oluştu: " + error)); // Posting to MyHub/SendMessageAsync endpoint.
+                const connectionId = connection.connectionId;
+                // connection.invoke("SendMessageAsync", message)
+                //     .catch(error => console.log("Bir hata oluştu: " + error)); // Posting to MyHub/SendMessageAsync endpoint.
+                $.get(`https://localhost:5001/api/home/${message}/${connectionId}`, (response) => {
+                    console.log('Başarılı:', response);
+                }).fail((error) => {
+                    console.log('Hata:', error);
+                });
             });
 
-            connection.on("receiveMessage", message => {
-                $("#messageDiv").append("<p>" + message + "</p>"); // <p> elementi içine mesajı ekliyoruz.
+            connection.on("receiveMessage", (message, connectionId) => {
+                $("#messageDiv").append("<p>" + connectionId + ": " + message + "</p>"); // <p> elementi içine mesajı ekliyoruz.
             });
 
             connection.on("userJoined", connectionId => {
